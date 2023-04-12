@@ -1,86 +1,86 @@
-import { View, Text, ImageBackground, Alert, ScrollView } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { View, Text, ImageBackground } from "react-native";
+import React, { useContext, useState } from "react";
 import { StyleSheet } from "react-native";
 import AppInput from "../../Components/AppInput";
 import UserIcon from "../../assets/svg/User";
 import Button from "../../Components/Button";
 import Image from "../../assets/webp/home-logo.webp";
-import { sendOTP } from "../../api";
+import { Otpverify } from "../../api";
 import { MainContext } from "../../Context";
 
-const Login = ({ navigation }) => {
-  const [number, setNumber] = useState();
+const Otp = ({ route, navigation }) => {
+  const [otp, setOtp] = useState();
   const [loading, setLoading] = useState(false);
-  const { toastMsg, setToastMsg } = useContext(MainContext);
-
-  const onChange = (e) => {
-    // console.log(e);
-    setNumber((prev) => e);
-  };
-
+  const { toastMsg, setToastMsg, storeData, setScreenLoading } =
+    useContext(MainContext);
+  let number = route.params.number;
+  console.log(route);
   const onPress = async () => {
     setLoading((prev) => true);
-
-    let pattern = /^[6-9]\d{9}$/;
-    if (!number) {
+    let pattern = /^[0-9]{6}$/;
+    if (!otp) {
       setLoading((prev) => false);
       return setToastMsg({
         type: "error",
-        text1: "Please Enter Your Number",
+        text1: "Please Enter Your OTP",
         // text2: "Please Enter Your Number",
       });
     }
-    if (!pattern.test(number)) {
+    if (!pattern.test(otp)) {
       setLoading((prev) => false);
       return setToastMsg({
         type: "error",
-        text1: "Please Enter Valid Number",
+        text1: "Please Enter Valid OTP",
         // text2: "Please Enter Your Number",
       });
     }
-    let res = await sendOTP(number);
-    console.log(res);
+    console.log("num", number, "otp", otp);
+    let res = await Otpverify(parseInt(number), parseInt(otp));
+    // console.log("OTP RESPONSE", res);
     if (res.status) {
       setLoading((prev) => false);
-      navigation.navigate("Otp", { number });
+      setScreenLoading((prev) => true);
+      let saveToken = await storeData(res.token);
+      setScreenLoading((prev) => false);
+
       return setToastMsg({
         type: "success",
-        text1: "OTP SENT ",
+        text1: "You are loggedIn",
         // text2: "Please Enter Your Number",
       });
     } else {
-      setToastMsg({
+      setLoading((prev) => false);
+      navigation.navigate("Login");
+      return setToastMsg({
         type: "error",
-        text1: "SOMETHING WENT WRONG ",
-        text2: "Please Try again after sometime",
+        text1: "something went wrong ",
+        // text2: "Please Enter Your Number",
       });
     }
-    setLoading((prev) => false);
+    setLoading((prev) => true);
+  };
+  const onChange = (e) => {
+    setOtp((prev) => e);
+    // console.log("number", e);
   };
   return (
     <View style={styles.Login}>
-      <ImageBackground
-        source={Image}
-        style={styles.ImageBackground}
-      ></ImageBackground>
-
       <View style={styles.container}>
         <View style={styles.Head}>
           <Text style={styles.headMain}>{"Welcome Back"}</Text>
-          <Text style={styles.Header}>{"Login Here"}</Text>
+          <Text style={styles.Header}>{"OTP HERE"}</Text>
         </View>
         <View style={styles.Appcontainer}>
-          <Text style={styles.appText}>{"Enter your Phone to continue"}</Text>
+          <Text style={styles.appText}>{"Enter OTP"}</Text>
           <AppInput
-            icon={<UserIcon />}
             keyboardType={"number-pad"}
-            maxLength={10}
-            value={number}
+            maxLength={6}
+            placeholder={"YOUR OTP"}
+            value={otp}
             onChange={onChange}
-            placeholder={"Your Number"}
           />
           <Button
-            title="login"
+            title="VERIFY"
             color={"#f1dfa1"}
             size={"medium"}
             onPress={onPress}
@@ -89,6 +89,10 @@ const Login = ({ navigation }) => {
           />
         </View>
       </View>
+      <ImageBackground
+        source={Image}
+        style={styles.ImageBackground}
+      ></ImageBackground>
     </View>
   );
 };
@@ -99,7 +103,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 1,
     width: "100%",
-
     // justifyContent: "center",
   },
   Head: {
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   Appcontainer: {
-    marginVertical: 50,
+    marginVertical: 10,
   },
   container: {
     flex: 2,
@@ -138,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Otp;

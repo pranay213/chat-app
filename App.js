@@ -1,21 +1,17 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 import Routes from "./Routes";
+import { MainContextProvider } from "./Context";
+import Toast from "react-native-toast-message";
+import { useEffect } from "react";
+import { Text } from "react-native";
 
 export default function App() {
   return (
     <>
-      <Routes />
-      <StatusBar style="auto" />
+      <MainContextProvider>
+        <Routes />
+        <StatusBar style="auto" />
+      </MainContextProvider>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
