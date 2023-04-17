@@ -6,23 +6,30 @@ import IconButton from "../../Components/IconButton";
 import Logout from "../../assets/svg/Logout";
 import Sun from "../../assets/svg/Sun";
 import Moon from "../../assets/svg/Moon";
+import Setup from "../Setup";
 
 const { width, height } = Dimensions.get("window");
 const Home = () => {
-  const { loginToken, clearAll, mode, setMode, changeMode } =
+  const { loginToken, clearAll, mode, setMode, changeMode, setup } =
     useContext(MainContext);
 
   return (
     <View style={styles.HomeScreen(mode)}>
-      <View style={styles.Mode}>
-        <IconButton
-          icon={mode === "light" ? <Sun /> : <Moon />}
-          onPress={changeMode}
-        />
-      </View>
-      <View style={styles.logout}>
-        <IconButton icon={<Logout />} onPress={() => clearAll()} />
-      </View>
+      {setup ? (
+        <Setup />
+      ) : (
+        <>
+          <View style={styles.Mode}>
+            <IconButton
+              icon={mode === "light" ? <Sun /> : <Moon />}
+              onPress={changeMode}
+            />
+          </View>
+          <View style={styles.logout}>
+            <IconButton icon={<Logout />} onPress={() => clearAll()} />
+          </View>
+        </>
+      )}
       <BottomNavigator />
     </View>
   );

@@ -38,20 +38,19 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 2,
     width: "100%",
-    height: 100,
+    height: 80,
     alignItems: "center",
     justifyContent: "center",
   },
   Navigator: {
-    width: "90%",
+    width: "100%",
     height: 80,
-    elevation: 1,
+    elevation: 5,
     flexDirection: "row",
     // borderWidth: 0.1,
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: "#fff",
-    borderRadius: 15,
   },
 });
 export default BottomNavigator;

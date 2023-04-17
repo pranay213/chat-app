@@ -10,9 +10,11 @@ const MainContextProvider = ({ children }) => {
   const [loginToken, setLoginToken] = useState(null);
   const [screenLoading, setScreenLoading] = useState(false);
   const [mode, setMode] = useState("light");
+  const [setup, setSetup] = useState(true);
 
   useEffect(() => {
     getData();
+    getSetup();
   }, []);
 
   const storeData = async (token) => {
@@ -31,6 +33,35 @@ const MainContextProvider = ({ children }) => {
     }
   };
 
+  //initial screen setup
+
+  const storeSetup = async () => {
+    try {
+      setScreenLoading((prev) => true);
+      let res = await AsyncStorage.setItem("setup", false);
+      setSetup((prev) => false);
+      setScreenLoading((prev) => false);
+      return true;
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
+  };
+
+  const getSetup = async () => {
+    try {
+      setScreenLoading((prev) => true);
+      let value = await AsyncStorage.getItem("setup");
+      if (value === null) {
+        setSetup((prev) => true);
+      } else setSetup((prev) => false);
+
+      setScreenLoading((prev) => false);
+    } catch (e) {
+      // error reading value
+      console.log(e);
+    }
+  };
   const getData = async () => {
     try {
       setScreenLoading((prev) => true);
@@ -81,6 +112,9 @@ const MainContextProvider = ({ children }) => {
         changeMode,
         mode,
         setMode,
+        setup,
+        setSetup,
+        storeSetup,
       }}
     >
       <Toast />
