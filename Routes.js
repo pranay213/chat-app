@@ -8,6 +8,7 @@ import { Alert, Text, View } from "react-native";
 import { MainContext } from "./Context";
 import Home from "./screens/Home/Home";
 import { ActivityIndicator } from "react-native";
+import Setup from "./screens/Setup";
 
 const Stack = createStackNavigator();
 
@@ -80,6 +81,11 @@ const AppStack = () => {
       <Stack.Screen
         name="Home"
         component={Home}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Setup"
+        component={Setup}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
